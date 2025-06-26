@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dank Character Creator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top to prevent content overflow */
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 800px; /* Increased max-width for more content */
+            width: 100%;
+            text-align: center;
+            margin-top: 20px; /* Add some top margin */
+            margin-bottom: 20px; /* Add some bottom margin */
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none; /* Hidden by default */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        textarea, input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .output-box {
+            background-color: #f9f9f9;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 50px;
+            text-align: left;
+            word-wrap: break-word;
+            white-space: pre-wrap; /* Preserve whitespace and line breaks */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Meet Dank!</h1>
+        <p class="text-gray-600 mb-6">Click the button below to generate Dank's character image.</p>
+        <button id="generateBtn" class="button">Generate Dank</button>
+        <div id="loadingImage" class="loading-spinner"></div>
+        <div id="imageContainer" class="mt-6">
+            <!-- Image will be displayed here -->
+        </div>
+
+        <!-- Dank's Dialogue Generator -->
+        <h2 class="section-title">Dank's Dialogue Generator</h2>
+        <p class="text-gray-600 mb-4">Enter a scenario and let Dank speak his mind. Remember his laid-back, funny, and inappropriate (but not vulgar) personality!</p>
+        <input type="text" id="dialogueScenario" placeholder="e.g., 'at a fancy dinner party', 'stuck in traffic', 'meeting a celebrity'" class="rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500">
+        <button id="generateDialogueBtn" class="button">Generate Dialogue ✨</button>
+        <div id="loadingDialogue" class="loading-spinner"></div>
+        <div id="dialogueOutput" class="output-box"></div>
+
+        <!-- Sidekick Idea Generator -->
+        <h2 class="section-title">Sidekick Idea Generator</h2>
+        <p class="text-gray-600 mb-4">Need a new partner in chaos for Dank? Click below for a sidekick concept!</p>
+        <button id="suggestSidekickBtn" class="button">Suggest Sidekick ✨</button>
+        <div id="loadingSidekick" class="loading-spinner"></div>
+        <div id="sidekickOutput" class="output-box"></div>
+
+        <!-- Adventure Scenario Idea Generator -->
+        <h2 class="section-title">Adventure Scenario Idea Generator</h2>
+        <p class="text-gray-600 mb-4">Let's plan Dank's next chaotic adventure!</p>
+        <button id="generateAdventureBtn" class="button">Generate Adventure Idea ✨</button>
+        <div id="loadingAdventure" class="loading-spinner"></div>
+        <div id="adventureOutput" class="output-box"></div>
+
+        <!-- Dank's Catchphrase Generator -->
+        <h2 class="section-title">Dank's Catchphrase Generator</h2>
+        <p class="text-gray-600 mb-4">Give Dank a topic and see what irreverent catchphrase he cooks up!</p>
+        <input type="text" id="catchphraseTopic" placeholder="e.g., 'monday mornings', 'diet fads', 'social media'" class="rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500">
+        <button id="generateCatchphraseBtn" class="button">Get Catchphrase ✨</button>
+        <div id="loadingCatchphrase" class="loading-spinner"></div>
+        <div id="catchphraseOutput" class="output-box"></div>
+
+        <!-- Dank's Life Advice -->
+        <h2 class="section-title">Dank's Life Advice</h2>
+        <p class="text-gray-600 mb-4">Got a problem? Dank's got some... advice. Be warned, it's Dank-style advice.</p>
+        <textarea id="adviceProblem" rows="3" placeholder="e.g., 'My boss is always micromanaging me', 'I can't decide what to eat for dinner', 'My neighbor keeps playing loud music'" class="rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"></textarea>
+        <button id="getAdviceBtn" class="button">Ask Dank ✨</button>
+        <div id="loadingAdvice" class="loading-spinner"></div>
+        <div id="adviceOutput" class="output-box"></div>
+
+        <!-- Dank's Book Idea Generator -->
+        <h2 class="section-title">Dank's Book Idea Generator</h2>
+        <p class="text-gray-600 mb-4">Thinking about Dank's next big literary masterpiece? Get some title and synopsis ideas!</p>
+        <button id="generateBookIdeaBtn" class="button">Generate Book Idea ✨</button>
+        <div id="loadingBookIdea" class="loading-spinner"></div>
+        <div id="bookIdeaOutput" class="output-box"></div>
+    </div>
+
+    <script>
+        // API Key (empty string will be automatically populated by Canvas environment)
+        const apiKey = "";
+
+        // Function to handle loading states for buttons and spinners
+        function setLoadingState(buttonId, spinnerId, text, isLoading) {
+            const button = document.getElementById(buttonId);
+            const spinner = document.getElementById(spinnerId);
+            button.disabled = isLoading;
+            button.textContent = isLoading ? 'Generating...' : text;
+            spinner.style.display = isLoading ? 'block' : 'none';
+        }
+
+        // --- Image Generation ---
+        document.getElementById('generateBtn').addEventListener('click', generateImage);
+
+        async function generateImage() {
+            const imageContainer = document.getElementById('imageContainer');
+            setLoadingState('generateBtn', 'loadingImage', 'Generate Dank', true);
+            imageContainer.innerHTML = ''; // Clear previous image
+
+            try {
+                const prompt = "A thin white male cartoon character named 'Dank' with a blond mullet. He wears a black wife beater shirt with 'ACDC' written on it. His face is scruffy. He wears jeans with holes in them and hightop red Air Jordan shoes. The character should be hip, laid back, and have a funny, slightly inappropriate expression, creating comedy out of chaos.";
+                const payload = { instances: [{ prompt: prompt }], parameters: { "sampleCount": 1 } };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+                    const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+                    const imgElement = document.createElement('img');
+                    imgElement.src = imageUrl;
+                    imgElement.alt = "Dank Character";
+                    imgElement.classList.add('rounded-lg', 'shadow-md');
+                    imageContainer.appendChild(imgElement);
+                } else {
+                    imageContainer.innerHTML = '<p class="text-red-500">Failed to generate image. No predictions found.</p>';
+                }
+            } catch (error) {
+                console.error('Error generating image:', error);
+                imageContainer.innerHTML = `<p class="text-red-500">Error generating image: ${error.message}. Please try again.</p>`;
+            } finally {
+                setLoadingState('generateBtn', 'loadingImage', 'Generate Dank', false);
+            }
+        }
+
+        // --- Dank's Dialogue Generator (LLM Text Generation) ---
+        document.getElementById('generateDialogueBtn').addEventListener('click', generateDankDialogue);
+
+        async function generateDankDialogue() {
+            const scenarioInput = document.getElementById('dialogueScenario');
+            const dialogueOutput = document.getElementById('dialogueOutput');
+            const scenario = scenarioInput.value.trim();
+
+            if (!scenario) {
+                dialogueOutput.textContent = "Please enter a scenario!";
+                return;
+            }
+
+            setLoadingState('generateDialogueBtn', 'loadingDialogue', 'Generate Dialogue ✨', true);
+            dialogueOutput.textContent = ''; // Clear previous output
+
+            try {
+                const prompt = `As the cartoon character 'Dank', a thin white kid with a blond mullet who is hip, laid back, funny, and has no regard for race, sex, pronouns, or weight, what would you say in this scenario, creating comedy out of chaos: "${scenario}"? Keep it inappropriate but not vulgar, and be concise.`;
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    dialogueOutput.textContent = text;
+                } else {
+                    dialogueOutput.textContent = 'Failed to generate dialogue.';
+                }
+            } catch (error) {
+                console.error('Error generating dialogue:', error);
+                dialogueOutput.textContent = `Error generating dialogue: ${error.message}`;
+            } finally {
+                setLoadingState('generateDialogueBtn', 'loadingDialogue', 'Generate Dialogue ✨', false);
+            }
+        }
+
+        // --- Sidekick Idea Generator (LLM Text Generation) ---
+        document.getElementById('suggestSidekickBtn').addEventListener('click', suggestSidekick);
+
+        async function suggestSidekick() {
+            const sidekickOutput = document.getElementById('sidekickOutput');
+            setLoadingState('suggestSidekickBtn', 'loadingSidekick', 'Suggest Sidekick ✨', true);
+            sidekickOutput.textContent = ''; // Clear previous output
+
+            try {
+                const prompt = `Suggest a character concept for a sidekick for 'Dank', a thin white kid with a blond mullet who is hip, laid back, funny, and has no regard for race, sex, pronouns, or weight. The sidekick should also be inappropriate but not vulgar, and add to comedic chaos. Describe their appearance, a key personality trait, and how they complement Dank. Be concise and focus on humorous aspects.`;
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    sidekickOutput.textContent = text;
+                } else {
+                    sidekickOutput.textContent = 'Failed to suggest a sidekick idea.';
+                }
+            } catch (error) {
+                console.error('Error suggesting sidekick:', error);
+                sidekickOutput.textContent = `Error suggesting sidekick: ${error.message}`;
+            } finally {
+                setLoadingState('suggestSidekickBtn', 'loadingSidekick', 'Suggest Sidekick ✨', false);
+            }
+        }
+
+        // --- Adventure Scenario Idea Generator (LLM Text Generation) ---
+        document.getElementById('generateAdventureBtn').addEventListener('click', generateAdventureIdea);
+
+        async function generateAdventureIdea() {
+            const adventureOutput = document.getElementById('adventureOutput');
+            setLoadingState('generateAdventureBtn', 'loadingAdventure', 'Generate Adventure Idea ✨', true);
+            adventureOutput.textContent = ''; // Clear previous output
+
+            try {
+                const prompt = `Generate a brief, absurd adventure scenario for the cartoon character 'Dank', a thin white kid with a blond mullet who creates comedy out of chaos and has no regard for race, sex, pronouns, or weight. The scenario should lead to humorous and inappropriate (but not vulgar) situations, and involve a random, unexpected setting. Focus on a single, funny concept.`;
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    adventureOutput.textContent = text;
+                } else {
+                    adventureOutput.textContent = 'Failed to generate adventure idea.';
+                }
+            } catch (error) {
+                console.error('Error generating adventure idea:', error);
+                adventureOutput.textContent = `Error generating adventure idea: ${error.message}`;
+            } finally {
+                setLoadingState('generateAdventureBtn', 'loadingAdventure', 'Generate Adventure Idea ✨', false);
+            }
+        }
+
+        // --- Dank's Catchphrase Generator (New LLM Feature) ---
+        document.getElementById('generateCatchphraseBtn').addEventListener('click', generateCatchphrase);
+
+        async function generateCatchphrase() {
+            const topicInput = document.getElementById('catchphraseTopic');
+            const catchphraseOutput = document.getElementById('catchphraseOutput');
+            const topic = topicInput.value.trim();
+
+            if (!topic) {
+                catchphraseOutput.textContent = "Please enter a topic!";
+                return;
+            }
+
+            setLoadingState('generateCatchphraseBtn', 'loadingCatchphrase', 'Get Catchphrase ✨', true);
+            catchphraseOutput.textContent = ''; // Clear previous output
+
+            try {
+                const prompt = `As the cartoon character 'Dank', a thin white kid with a blond mullet who is hip, laid back, funny, and has no regard for race, sex, pronouns, or weight, generate a short, inappropriate (but not vulgar) and humorous catchphrase about "${topic}". Make it sound like something Dank would actually say.`;
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    catchphraseOutput.textContent = text;
+                } else {
+                    catchphraseOutput.textContent = 'Failed to generate catchphrase.';
+                }
+            } catch (error) {
+                console.error('Error generating catchphrase:', error);
+                catchphraseOutput.textContent = `Error generating catchphrase: ${error.message}`;
+            } finally {
+                setLoadingState('generateCatchphraseBtn', 'loadingCatchphrase', 'Get Catchphrase ✨', false);
+            }
+        }
+
+        // --- Dank's Life Advice (New LLM Feature) ---
+        document.getElementById('getAdviceBtn').addEventListener('click', getDankAdvice);
+
+        async function getDankAdvice() {
+            const problemInput = document.getElementById('adviceProblem');
+            const adviceOutput = document.getElementById('adviceOutput');
+            const problem = problemInput.value.trim();
+
+            if (!problem) {
+                adviceOutput.textContent = "Please describe the problem!";
+                return;
+            }
+
+            setLoadingState('getAdviceBtn', 'loadingAdvice', 'Ask Dank ✨', true);
+            adviceOutput.textContent = ''; // Clear previous output
+
+            try {
+                const prompt = `As the cartoon character 'Dank', a thin white kid with a blond mullet who is hip, laid back, funny, and has no regard for race, sex, pronouns, or weight, provide highly unconventional, inappropriate (but not vulgar), and humorous life advice for the problem: "${problem}". Keep it concise and chaotic.`;
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    adviceOutput.textContent = text;
+                } else {
+                    adviceOutput.textContent = 'Failed to get advice from Dank.';
+                }
+            } catch (error) {
+                console.error('Error getting advice:', error);
+                adviceOutput.textContent = `Error getting advice: ${error.message}`;
+            } finally {
+                setLoadingState('getAdviceBtn', 'loadingAdvice', 'Ask Dank ✨', false);
+            }
+        }
+
+        // --- Dank's Book Idea Generator (New LLM Feature) ---
+        document.getElementById('generateBookIdeaBtn').addEventListener('click', generateBookIdea);
+
+        async function generateBookIdea() {
+            const bookIdeaOutput = document.getElementById('bookIdeaOutput');
+            setLoadingState('generateBookIdeaBtn', 'loadingBookIdea', 'Generate Book Idea ✨', true);
+            bookIdeaOutput.textContent = ''; // Clear previous output
+
+            try {
+                const prompt = `Generate a title and a very short, humorous, and inappropriate (but not vulgar) synopsis for a book featuring 'Dank', the cartoon character who is hip, laid back, funny, and has no regard for race, sex, pronouns, or weight, and creates comedy out of chaos. The synopsis should hint at a wild, absurd adventure.`;
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    bookIdeaOutput.textContent = text;
+                } else {
+                    bookIdeaOutput.textContent = 'Failed to generate a book idea.';
+                }
+            } catch (error) {
+                console.error('Error generating book idea:', error);
+                bookIdeaOutput.textContent = `Error generating book idea: ${error.message}`;
+            } finally {
+                setLoadingState('generateBookIdeaBtn', 'loadingBookIdea', 'Generate Book Idea ✨', false);
+            }
+        }
+    </script>
+</body>
+</html>
